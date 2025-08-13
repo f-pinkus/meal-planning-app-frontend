@@ -13,7 +13,7 @@ const handleIndex = () => {
 
 useEffect(() => {
   handleIndex();
-});
+}, []);
 
   return (
     <main>
