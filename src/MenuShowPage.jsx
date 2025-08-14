@@ -1,14 +1,13 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 export function MenuShowPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [menu, setMenu] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({title: "", foods: ""});
+  const [formData, setFormData] = useState({ title: "", foods: "" });
 
   useEffect(() => {
     axios.get(`/menus/${id}`).then((response) => {
@@ -21,8 +20,8 @@ export function MenuShowPage() {
   }, [id]);
 
   function handleChange(event) {
-    const {name, value } = event.target;
-    setFormData((prev) => ({...prev, [name]: value }))
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
   function handleUpdate(event) {
@@ -32,11 +31,23 @@ export function MenuShowPage() {
       .then((response) => {
         setMenu(response.data);
         setIsEditing(false);
-        navigate(`/menus/${id}`);
       })
       .catch((error) => {
-        console.error("Error updating menu:", error)
+        console.error("Error updating menu:", error);
       });
+  }
+
+  function handleDelete() {
+    if (window.confirm("Are you sure you want to delete this menu?")) {
+      axios
+        .delete(`/menus/${id}`)
+        .then(() => {
+          navigate("/menus");
+        })
+        .catch((error) => {
+          console.error("Error deleting menu:", error);
+        });
+    }
   }
 
   if (!menu) {
@@ -48,9 +59,12 @@ export function MenuShowPage() {
       {!isEditing ? (
         <>
           <h1>{menu.title}</h1>
-          <p><strong>Foods:</strong> {menu.foods}</p>
+          <p>
+            <strong>Foods:</strong> {menu.foods}
+          </p>
           <button onClick={() => setIsEditing(true)}>Edit</button>
-          <Link to={`/menus`}>Back to Menus</Link>
+          <button onClick={handleDelete}>Delete</button>
+          <Link to="/menus">Back to Menus</Link>
         </>
       ) : (
         <form onSubmit={handleUpdate}>
@@ -83,5 +97,4 @@ export function MenuShowPage() {
       )}
     </main>
   );
-
 }
