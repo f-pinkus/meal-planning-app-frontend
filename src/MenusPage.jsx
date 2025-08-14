@@ -5,6 +5,7 @@ import { MenusNew } from "./MenusNew";
 
 export function MenusPage() {
   const [menus, setMenus] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleIndex = () => {
     axios.get("/menus.json").then((response) => {
@@ -19,6 +20,10 @@ export function MenusPage() {
     });
   };
 
+  const filteredMenus = menus.filter((menu) =>
+    menu.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   useEffect(() => {
     handleIndex();
   }, []);
@@ -26,7 +31,17 @@ export function MenusPage() {
   return (
     <main>
       <MenusNew onCreate={handleCreate} />
-      <MenusIndex menus={menus} />
+
+      <div>
+        <input
+          type="text"
+          placeholder="Search menus..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      <MenusIndex menus={filteredMenus} />
     </main>
   );
 }
