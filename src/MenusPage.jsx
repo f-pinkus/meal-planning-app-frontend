@@ -30,9 +30,10 @@ export function MenusPage() {
 
   return (
     <main>
-      <MenusNew onCreate={handleCreate} />
-
+      
       <div>
+        <MenusIndex menus={filteredMenus} />
+
         <input
           type="text"
           placeholder="Search menus..."
@@ -41,7 +42,7 @@ export function MenusPage() {
         />
       </div>
 
-      <MenusIndex menus={filteredMenus} />
+      <MenusNew onCreate={handleCreate} />
     </main>
   );
 }

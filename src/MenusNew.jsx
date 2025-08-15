@@ -11,7 +11,7 @@ export function MenusNew({ onCreate }) {
 
   return (
     <div>
-      <h1>New Menu</h1>
+      <h2>New Menu:</h2>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
