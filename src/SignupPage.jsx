@@ -11,7 +11,7 @@ export function SignupPage() {
     setErrors([]);
     const params = new FormData(event.target);
     axios
-      .post("http://localhost:3000/signup", params)
+      .post("/signup", params)
       .then((response) => {
         console.log(response.data);
         event.target.reset();
@@ -19,7 +19,7 @@ export function SignupPage() {
       })
       .catch((error) => {
         console.log(error.response.data.errors);
-        setErrors(error.response.data.errors);
+        setErrors(error.response.data.errors || ["Something went wrong."]);
       });
   };
 
