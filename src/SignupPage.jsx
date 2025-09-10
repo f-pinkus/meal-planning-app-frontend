@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export function SignupPage() {
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -39,11 +40,18 @@ export function SignupPage() {
           Email: <input name="email" type="email" />
         </div>
         <div>
-          Password: <input name="password" type="password" />
+          Password: <input name="password" type={showPassword ? "text" : "password"} />
         </div>
         <div>
-          Password confirmation: <input name="password_confirmation" type="password" />
+          Password confirmation: <input name="password_confirmation" type={showPassword ? "text" : "password"} />
         </div>
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          style={{ marginLeft: "8px" }}
+        >
+          {showPassword ? "Hide" : "Show"}
+        </button>
         <button type="submit">Signup</button>
       </form>
     </div>
