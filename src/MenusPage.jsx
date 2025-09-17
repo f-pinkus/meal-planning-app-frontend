@@ -13,8 +13,14 @@ export function MenusPage() {
     });
   };
 
-  const handleCreate = (params, successCallback) => {
-    axios.post("/menus.json", params).then((response) => {
+  const handleCreate = (formData, successCallback) => {
+    // Convert FormData back into a plain object for JSON
+    const data = {
+      title: formData.get("title"),
+      foods: formData.getAll("foods[]"), // Rails will receive this as an array
+    };
+
+    axios.post("/menus.json", data).then((response) => {
       setMenus([...menus, response.data]);
       successCallback();
     });
@@ -30,7 +36,6 @@ export function MenusPage() {
 
   return (
     <main>
-      
       <div>
         <MenusIndex menus={filteredMenus} />
 

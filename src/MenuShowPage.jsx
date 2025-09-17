@@ -7,21 +7,41 @@ export function MenuShowPage() {
   const navigate = useNavigate();
   const [menu, setMenu] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({ title: "", foods: "" });
+  const [formData, setFormData] = useState({ title: "", foods: [] });
 
   useEffect(() => {
     axios.get(`/menus/${id}`).then((response) => {
-      setMenu(response.data);
+      let foods = response.data.foods;
+
+      // ✅ Normalize foods into an array
+      if (typeof foods === "string") {
+        try {
+          foods = JSON.parse(foods); // if it's a JSON string
+        } catch {
+          foods = foods.split(",").map((f) => f.trim()).filter(Boolean); // fallback
+        }
+      }
+
+      setMenu({ ...response.data, foods });
       setFormData({
         title: response.data.title || "",
-        foods: response.data.foods || "",
+        foods: foods || [],
       });
     });
   }, [id]);
 
   function handleChange(event) {
     const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "foods") {
+      // Split textarea into array (1 item per line)
+      setFormData((prev) => ({
+        ...prev,
+        foods: value.split("\n").map((f) => f.trim()).filter(Boolean),
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   }
 
   function handleUpdate(event) {
@@ -29,7 +49,15 @@ export function MenuShowPage() {
     axios
       .put(`/menus/${id}`, formData)
       .then((response) => {
-        setMenu(response.data);
+        let foods = response.data.foods;
+        if (typeof foods === "string") {
+          try {
+            foods = JSON.parse(foods);
+          } catch {
+            foods = foods.split(",").map((f) => f.trim()).filter(Boolean);
+          }
+        }
+        setMenu({ ...response.data, foods });
         setIsEditing(false);
       })
       .catch((error) => {
@@ -60,8 +88,13 @@ export function MenuShowPage() {
         <>
           <h1>{menu.title}</h1>
           <p>
-            <strong>Foods:</strong> {menu.foods}
+            <strong>Foods:</strong>
           </p>
+          <ul>
+            {menu.foods.map((food, index) => (
+              <li key={index}>{food}</li>
+            ))}
+          </ul>
           <button onClick={() => setIsEditing(true)}>Edit</button>
           <button onClick={handleDelete}>Delete</button>
           <Link to="/menus">Back to Menus</Link>
@@ -81,10 +114,10 @@ export function MenuShowPage() {
           </div>
           <div>
             <label>
-              Foods:
+              Foods (one per line):
               <textarea
                 name="foods"
-                value={formData.foods}
+                value={formData.foods.join("\n")}
                 onChange={handleChange}
               />
             </label>
