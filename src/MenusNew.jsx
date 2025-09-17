@@ -1,3 +1,7 @@
+import React from "react";
+import GenerateMenuButton from "./GenerateMenuButton"; 
+
+
 export function MenusNew({ onCreate }) {
 
   const handleSubmit = (event) => {
@@ -12,6 +16,13 @@ export function MenusNew({ onCreate }) {
   return (
     <div>
       <h2>New Menu:</h2>
+
+      <GenerateMenuButton onGenerated={(menu) => {
+        // Auto-fill the form fields with AI-generated menu
+        document.getElementById("title").value = menu.title;
+        document.getElementById("foods").value = menu.foods;
+      }} />
+
 
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
