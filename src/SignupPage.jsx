@@ -16,7 +16,7 @@ export function SignupPage() {
       .then((response) => {
         console.log(response.data);
         event.target.reset();
-        navigate("/login");
+        navigate("/login"); // Navigate to login page after successful signup
       })
       .catch((error) => {
         console.log(error.response.data.errors);
